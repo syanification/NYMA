@@ -11,6 +11,8 @@ def pull_news():
 
     finnhub_client = finnhub.Client(api_key=config.FINN_API_KEY)
 
+    combined_data = {}
+
     for ticker in company_list:
         # Fetch company news
         news_data = finnhub_client.company_news(ticker, _from=date_weekago, to=date_today)
@@ -21,14 +23,19 @@ def pull_news():
             for item in news_data
         ][:50]  # Limit to the first 50 items
 
+        # Fetch recommendation data
         rec_data = finnhub_client.recommendation_trends(ticker)
 
-        # Save the filtered news data to a JSON file
-        with open(f'news/{ticker}_news.json', 'w') as json_file:
-            json.dump(filtered_news_data, json_file, indent=4)
+        # Combine the news data and recommendation for the company
+        combined_data[ticker] = {
+            "news": filtered_news_data,
+            "recommendation": rec_data
+        }
 
-        # Save the recommendation data to a JSON file
-        with open(f'recs/{ticker}_recs.json', 'w') as json_file:
-            json.dump(rec_data, json_file, indent=4)
+    # Save the combined data to a single JSON file
+    with open('combined_news.json', 'w') as json_file:
+        json.dump(combined_data, json_file, indent=4)
 
     return 1
+
+pull_news()
