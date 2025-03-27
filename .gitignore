@@ -1,0 +1,5 @@
+__pycache__/
+config.py
+company_news.json
+news/
+recs/
