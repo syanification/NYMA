@@ -14,7 +14,7 @@ def get_sentiment_score(text):
     with torch.no_grad():
         logits = model(**inputs).logits
     probs = softmax(logits, dim=1)
-    score = probs[0][2] - probs[0][0]  # positive - negative
+    score = probs[0][2] - probs[0][0]
     return score.item()
 
 def recommendation_score_block(blocks):
@@ -40,7 +40,7 @@ def process_stock(ticker_data):
     final_score = 0.6 * avg_sentiment + 0.4 * avg_rec
     return final_score
 
-# === Load your JSON file ===
+# Load the JSON file
 with open("combined_news.json", "r") as f:
     data = json.load(f)
 
@@ -48,7 +48,7 @@ results = {}
 for ticker, content in data.items():
     results[ticker] = process_stock(content)
 
-# === Ranking ===
+# Output Ranking
 ranked = sorted(results.items(), key=lambda x: -x[1])
 print("\n📈 Top Buys:")
 for t, s in ranked[:5]:
